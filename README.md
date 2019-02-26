@@ -2,8 +2,8 @@
 
 [logo]: https://www.newpaltz.edu/media/identity/logos/newpaltzlogo.jpg "SUNY New Paltz Logo"
 # Fall 2019 Embedded Linux
-This repository is used to contain all of my work for **CPS342: Embedded Linux**
 
+This branch is for logging temperature data using the DHT11 sensor
 
 1. **Personal information**
 
