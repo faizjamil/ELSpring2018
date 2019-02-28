@@ -3,6 +3,7 @@ import RPi.GPIO as GPIO
 import Adafruit_DHT
 import time
 import os
+import sqlite3
 
 #Assign GPIO pins
 redPin = 27
@@ -22,6 +23,11 @@ blinkTime = 7
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(redPin,GPIO.OUT)
 GPIO.setup(buttonPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+#SQLite stuff
+tempDb = squlite3.connect('././log/temperatures.db')
+tempCursor = tempDb.cursor() #Get cursor
+
+tempDb.commit() #commite the stuffs
 
 #this function will make light blink once
 def oneBlink(pin):
@@ -41,20 +47,27 @@ def readF(tempPin):
 	
 #call oneBlink function
 try:
-	with open("../log/tempLog.csv", "a") as log:
+	with open("../../log/tempLog.csv", "a") as log:
 		while True:
-			input_state = GPIO.input(buttonPin)
-			if input_state == False:
+			#button is kill
+			#input_state = GPIO.input(buttonPin)
+			#if input_state == False:
 				for i in range(blinkTime):
 					oneBlink(redPin)
 				time.sleep(.2)
 				data = readF(tempPin)
 				print(data)
-				
 				log.write("{0},{1}\n".format(time.strftime("%Y-%m-%d %H:%M:%S"),str(data)))
+				currentTime = time.strftime("%Y-%m-%d %H:%M:%S") 
+				tempCursor.execute('''INSERT INTO recorded VALUES(?,?)''', (currentTime, str(data)))
+				tempDb.commit()
+				rows = cursor.execute('''SELECT * FROM recorded''')
+				os.system('clear')
+				for row in rows:
+					print('{0} : {1}'.format(str(row[0]), row[1],))
 #clear shell, print goodbyes, and clean up GPIO
 except KeyboardInterrupt:
-	#os.system('clear')
+	os.system('clear')
 	print('Thanks for Blinking and Thinking!')
 	GPIO.cleanup()
-
+	tempDb.close()
