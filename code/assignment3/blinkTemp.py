@@ -24,11 +24,12 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(redPin,GPIO.OUT)
 GPIO.setup(buttonPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 #SQLite stuff
-tempDb = sqlite3.connect('././log/temperatures.db')
+tempDb = sqlite3.connect('../../log/temperatures.db')
 tempCursor = tempDb.cursor() #Get cursor
 
 tempDb.commit() #commite the stuffs
-
+#tempCursor.execute('''CREATE TABLE recorded(time TEXT, temperature TEXT)''')
+tempDb.commit()
 #this function will make light blink once
 def oneBlink(pin):
 	GPIO.output(pin,True)
@@ -59,9 +60,9 @@ try:
 				print(data)
 				log.write("{0},{1}\n".format(time.strftime("%Y-%m-%d %H:%M:%S"),str(data)))
 				currentTime = time.strftime("%Y-%m-%d %H:%M:%S") 
-				tempCursor.execute('''INSERT INTO recorded VALUES(?,?)''', (currentTime, str(data)))
+				tempCursor.execute('''INSERT INTO recorded(time, temperature) VALUES(?,?)''', (currentTime, str(data)))
 				tempDb.commit()
-				rows = cursor.execute('''SELECT * FROM recorded''')
+				rows = tempCursor.execute('''SELECT * FROM recorded''')
 				os.system('clear')
 				for row in rows:
 					print('{0} : {1}'.format(str(row[0]), row[1],))
