@@ -24,7 +24,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(redPin,GPIO.OUT)
 GPIO.setup(buttonPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 #SQLite stuff
-tempDb = squlite3.connect('././log/temperatures.db')
+tempDb = sqlite3.connect('././log/temperatures.db')
 tempCursor = tempDb.cursor() #Get cursor
 
 tempDb.commit() #commite the stuffs
