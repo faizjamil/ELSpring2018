@@ -6,8 +6,8 @@
   <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js'></script>
 </head>
 <body>
-  <canvas id="mainChart" width="600" height="400"></canvas>
-  <h1>Test HTML</h1>
+  <h1>Temperature in current room</h1>
+  <canvas id="mainChart" width="300" height="200"></canvas>
   <script>
     var ctx = document.getElementById("mainChart");
     var mainChart = new Chart(ctx, {
@@ -19,7 +19,7 @@
               {% endfor %}
             ],
             datasets: [{
-                label: '# of Votes',
+                label: 'Temperature in Farenheit',
                 data: [{% for item in values %}
                   {{ item }},
                   {% endfor %}
