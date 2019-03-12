@@ -29,7 +29,7 @@ tempDb = sqlite3.connect('../../log/temperatures.db')
 tempCursor = tempDb.cursor() #Get cursor
 
 tempDb.commit() #commite the stuffs
-tempCursor.execute('''CREATE TABLE recorded(time TEXT, temperature TEXT)''')
+#tempCursor.execute('''CREATE TABLE recorded(time TEXT, temperature TEXT)''')
 #this function will make light blink once
 def oneBlink(pin):
 	GPIO.output(pin,True)
@@ -57,7 +57,7 @@ try:
 					oneBlink(redPin)
 				time.sleep(60)
 				timeElapsed += 60
-				#timeElapsed == timeElapsed // 60
+				timeElapsed = timeElapsed // 60
 				data = readF(tempPin)
 				print(data)
 				log.write("{0},{1}\n".format(timeElapsed,str(data)))					

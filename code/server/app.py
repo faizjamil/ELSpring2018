@@ -4,7 +4,7 @@ from flask import render_template
 import sqlite3
 import importlib
 #importlib.import_module('blinkTemp.py')
-blink_module = importlib.import_module('blinkTemp')
+#blink_module = importlib.import_module('blinkTemp')
 app = Flask(__name__)
 
 @app.route('/')
