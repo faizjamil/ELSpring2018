@@ -10,8 +10,8 @@ app = Flask(__name__)
 @app.route('/')
 def chart():
     #import from sqlite db
-    blink_module.collectData()
-    db = sqlite3.connect('../log/temperatures.db')
+    #blink_module.collectData()
+    db = sqlite3.connect('../../log/temperatures.db')
     cursor = db.cursor()
     cursor.execute('''SELECT time, temperature FROM recorded''')
     temperatures = []
@@ -25,4 +25,4 @@ def chart():
     db.close()
     return render_template('main_chart.html', values=temperatures, labels=times)
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001)
+    app.run(host='0.0.0.0', port=5000)

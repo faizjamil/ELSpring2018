@@ -29,7 +29,7 @@ tempDb = sqlite3.connect('../../log/temperatures.db')
 tempCursor = tempDb.cursor() #Get cursor
 
 tempDb.commit() #commite the stuffs
-#tempCursor.execute('''CREATE TABLE recorded(time TEXT, temperature TEXT)''')
+tempCursor.execute('''CREATE TABLE recorded(time TEXT, temperature TEXT)''')
 #this function will make light blink once
 def oneBlink(pin):
 	GPIO.output(pin,True)
@@ -47,32 +47,30 @@ def readF(tempPin):
 	return tempFahr
 	
 #call oneBlink function
-def collectData():
-	try:
-		with open("../../log/tempLog.csv", "a") as log:
-			while True:
-				#button is kill
-				#input_state = GPIO.input(buttonPin)
-				#if input_state == False:
-					for i in range(blinkTime):
-						oneBlink(redPin)
-					time.sleep(60)
-					timeElapsed += 60
-					timeElapsed == timeElapsed // 60
-					data = readF(tempPin)
-					print(data)
-					log.write("{0},{1}\n".format(timeElapsed,str(data)))
-					
-					#currentTime = time.strftime("%Y-%m-%d %H:%M:%S") 
-					tempCursor.execute('''INSERT INTO recorded(time, temperature) VALUES(?,?)''', (timeElapsed, str(data)))
-					tempDb.commit()
-					rows = tempCursor.execute('''SELECT * FROM recorded''')
-					os.system('clear')
-					for row in rows:
-						print('{0} : {1}'.format(str(row[0]), row[1],))
-	#clear shell, print goodbyes, and clean up GPIO
-	except KeyboardInterrupt:
-		os.system('clear')
-		print('Thanks for Blinking and Thinking!')
-		GPIO.cleanup()
-		tempDb.close()
+try:
+	with open("../../log/tempLog.csv", "a") as log:
+		while True:
+			#button is kill
+			#input_state = GPIO.input(buttonPin)
+			#if input_state == False:
+				for i in range(blinkTime):
+					oneBlink(redPin)
+				time.sleep(1)
+				timeElapsed += 60
+				#timeElapsed == timeElapsed // 60
+				data = readF(tempPin)
+				print(data)
+				log.write("{0},{1}\n".format(timeElapsed,str(data)))					
+				#currentTime = time.strftime("%Y-%m-%d %H:%M:%S") 
+				tempCursor.execute('''INSERT INTO recorded(time, temperature) VALUES(?,?)''', (timeElapsed, str(data)))
+				tempDb.commit()
+				rows = tempCursor.execute('''SELECT * FROM recorded''')
+				os.system('clear')
+				for row in rows:
+					print('{0} : {1}'.format(str(row[0]), row[1],))
+#clear shell, print goodbyes, and clean up GPIO
+except KeyboardInterrupt:
+	os.system('clear')
+	print('Thanks for Blinking and Thinking!')
+	GPIO.cleanup()
+	tempDb.close()
