@@ -44,8 +44,7 @@ def readF(tempPin):
 		tempFahr = '{0:0.1f}*F'.format(temperature)
 	else:
 		print('Error reading sensor')
-	return tempFahr
-	
+	return tempFahr	
 #call oneBlink function
 try:
 	with open("../../log/tempLog.csv", "a") as log:
@@ -55,9 +54,9 @@ try:
 			#if input_state == False:
 				for i in range(blinkTime):
 					oneBlink(redPin)
-				time.sleep(60)
+				time.sleep(1)
 				timeElapsed += 60
-				#timeElapsed = timeElapsed // 60
+				#timeElapsed == timeElapsed // 60
 				data = readF(tempPin)
 				print(data)
 				log.write("{0},{1}\n".format(timeElapsed,str(data)))					
