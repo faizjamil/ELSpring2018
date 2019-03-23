@@ -13,8 +13,8 @@ hallPin = 17
 roomPin = 22
 
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(camPin1, GPIO.IN)
-GPIO.setup(camPin2, GPIO.IN)
+GPIO.setup(hallPin, GPIO.IN)
+GPIO.setup(roomPin, GPIO.IN)
 
 #FOR EVERYTHING BELOW I REFER TO THE FIRST AND SECOND SENSORS. THAT DOESN'T REFER TO THE POSITION OF THE SENSORS,
 #IT REFERS TO THE ORDER THAT THEY ARE TRIGGERED IN.
@@ -32,16 +32,15 @@ def bothTriggers(trigger2, wait=5):
 	timeCheck = time.time()
 	while not GPIO.input(trigger2):
 		if time.time() - timeCheck > wait:
-            break
-        continue
+			break
+		continue
     #If the second sensor is triggered, it bypasses the previous if statement and creates the timestamp
     #The it waits for 5 seconds to let the sensors reset. Adjust the sleep timer to the time it takes 
     #for both of your sensors to reset.
-    if time.time() - timeCheck <= wait:
-        timeStamp = time.strftime("%Y-%m-%d %H:%M:%S")
-        time.sleep(10)
-        continue
-
+		if time.time() - timeCheck <= wait:
+			timeStamp = time.strftime("%Y-%m-%d %H:%M:%S")
+			time.sleep(10)
+			continue
 #Now you need to rewrite all of this.  You need 2 if statements, one for each sensor.
 #When the first sensor is triggered, it should pass the variable for the second sensor's pin.
 
@@ -61,11 +60,10 @@ try:
 		con = mydb.connect('../../log/motions.db')
 		cur = con.cursor()
 		#Reset timeStamp to false to prevent writing data until both sensors are triggered again
-		timeStamp = False
-        
-        if GPIO.input(hallPin):
+		timeStamp = False 
+		if GPIO.input(hallPin):
 			timeStamp = bothTriggers(roomPin)
-			if timeStamp:
+#			if timeStamp:
 #Write a bit here that sets a variable to show that a person entered the room. Increase the roomCount +1
 		if GPIO.input(roomPin):
 			timeStamp = bothTriggers(hallPin)
@@ -79,11 +77,10 @@ try:
 			cur.execute('''INSERT INTO recorded(time, people) VALUES(?,?)''', (timeStamp, roomCount))
 
 #Write a bit here to log the timeSamp, if the person was entering or exiting, and the room count after they entered or exited.
-		
 
-except mydb.Error, e:
-	print "Error %s:" %e.args[0]
-	sys.exit(1)
+#except mydb.Error, e:
+#	print "Error %s:" %e.args[0]
+#	sys.exit(1)
 
 except KeyboardInterrupt:
         GPIO.cleanup()
