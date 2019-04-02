@@ -63,24 +63,23 @@ try:
 		timeStamp = False 
 		if GPIO.input(hallPin):
 			timeStamp = bothTriggers(roomPin)
-#			if timeStamp:
+			if timeStamp:
 #Write a bit here that sets a variable to show that a person entered the room. Increase the roomCount +1
+			  personEntered = true  
 		if GPIO.input(roomPin):
 			timeStamp = bothTriggers(hallPin)
 			if timeStamp:
 				roomCount = roomCount + 1
 #Write a bit here that set a variable to show that a person left the room. Decrease the roomCount -1
-
+				personEntered = false
 #Since the timeStamp is only set when the direction is determined and both sensors are triggered we use that as the condition to write our data:
 		if timeStamp:
+#Write a bit here to log the timeSamp, if the person was entering or exiting, and the room count after they entered or exited.
 			timeStamp = time.strftime("%Y-%m-%d %H:%M:%S")
 			cur.execute('''INSERT INTO recorded(time, people) VALUES(?,?)''', (timeStamp, roomCount))
-
-#Write a bit here to log the timeSamp, if the person was entering or exiting, and the room count after they entered or exited.
-
-#except mydb.Error, e:
-#	print "Error %s:" %e.args[0]
-#	sys.exit(1)
+except mydb.Error, e:
+	print "Error %s:" %e.args[0]
+	sys.exit(1)
 
 except KeyboardInterrupt:
         GPIO.cleanup()
