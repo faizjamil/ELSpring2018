@@ -10,11 +10,11 @@ import sys
 
 #Assign gpio pins. 13 is for entering. 26 is for leaving.
 hallPin = 17
-roomPin = 22
+roomPin = 26
 
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(hallPin, GPIO.IN)
-GPIO.setup(roomPin, GPIO.IN)
+GPIO.setup(hallPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(roomPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 #FOR EVERYTHING BELOW I REFER TO THE FIRST AND SECOND SENSORS. THAT DOESN'T REFER TO THE POSITION OF THE SENSORS,
 #IT REFERS TO THE ORDER THAT THEY ARE TRIGGERED IN.
@@ -61,12 +61,12 @@ try:
 		cur = con.cursor()
 		#Reset timeStamp to false to prevent writing data until both sensors are triggered again
 		timeStamp = False 
-		if GPIO.input(hallPin):
+		if (GPIO.input(hallPin)==False):
 			timeStamp = bothTriggers(roomPin)
 			if timeStamp:
 #Write a bit here that sets a variable to show that a person entered the room. Increase the roomCount +1
 			  personEntered = true  
-		if GPIO.input(roomPin):
+		if (GPIO.input(roomPin)==False):
 			timeStamp = bothTriggers(hallPin)
 			if timeStamp:
 				roomCount = roomCount + 1
@@ -75,11 +75,12 @@ try:
 #Since the timeStamp is only set when the direction is determined and both sensors are triggered we use that as the condition to write our data:
 		if timeStamp:
 #Write a bit here to log the timeSamp, if the person was entering or exiting, and the room count after they entered or exited.
+			print("Sensors detected something")
 			timeStamp = time.strftime("%Y-%m-%d %H:%M:%S")
-			cur.execute('''INSERT INTO recorded(time, people) VALUES(?,?)''', (timeStamp, roomCount))
-except mydb.Error, e:
-	print "Error %s:" %e.args[0]
-	sys.exit(1)
+#			cur.execute('''INSERT INTO recorded(time, people) VALUES(?,?)''', (timeStamp, roomCount))
+#except mydb.Error, e:
+#	print "Error %s:" %e.args[0]
+#	sys.exit(1)
 
 except KeyboardInterrupt:
         GPIO.cleanup()
